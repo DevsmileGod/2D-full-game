@@ -1,0 +1,554 @@
+[
+  {
+    "boss": "CERBERUS",
+    "filename": "01_cerberus_p1_chained_64x64.png",
+    "order": 1,
+    "phase": "p1_chained",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": 2,
+    "source_sheet": "Cerberus design maybe.png"
+  },
+  {
+    "boss": "CERBERUS",
+    "filename": "01_cerberus_p2_unchained_64x64.png",
+    "order": 1,
+    "phase": "p2_unchained",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": 7,
+    "source_sheet": "Cerberus design maybe.png"
+  },
+  {
+    "boss": "CERBERUS",
+    "filename": "01_cerberus_p3_maddened_48x48.png",
+    "order": 1,
+    "phase": "p3_maddened",
+    "size": [
+      48,
+      48
+    ],
+    "source_index": 16,
+    "source_sheet": "Cerberus design maybe.png"
+  },
+  {
+    "boss": "CHARON",
+    "filename": "02_charon_p1_raft_48x64.png",
+    "order": 2,
+    "phase": "p1_raft",
+    "size": [
+      48,
+      64
+    ],
+    "source_index": 1,
+    "source_sheet": "charon design maybe.png"
+  },
+  {
+    "boss": "CHARON",
+    "filename": "02_charon_p2_capsized_48x64.png",
+    "order": 2,
+    "phase": "p2_capsized",
+    "size": [
+      48,
+      64
+    ],
+    "source_index": 2,
+    "source_sheet": "charon design maybe.png"
+  },
+  {
+    "boss": "THE FURIES",
+    "filename": "03_the_furies_p1_formation_44x44.png",
+    "order": 3,
+    "phase": "p1_formation",
+    "size": [
+      44,
+      44
+    ],
+    "source_index": 1,
+    "source_sheet": "furies design maybe.png"
+  },
+  {
+    "boss": "THE FURIES",
+    "filename": "03_the_furies_p3_grounded_44x44.png",
+    "order": 3,
+    "phase": "p3_grounded",
+    "size": [
+      44,
+      44
+    ],
+    "source_index": null,
+    "source_sheet": "furies design maybe.png"
+  },
+  {
+    "boss": "MINOTAUR",
+    "filename": "04_minotaur_p1_charge_64x64.png",
+    "order": 4,
+    "phase": "p1_charge",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": 1,
+    "source_sheet": "Minotuar design maybe.png"
+  },
+  {
+    "boss": "MINOTAUR",
+    "filename": "04_minotaur_p2_pillar_64x64.png",
+    "order": 4,
+    "phase": "p2_pillar",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": 21,
+    "source_sheet": "Minotuar design maybe.png"
+  },
+  {
+    "boss": "CYCLOPS",
+    "filename": "05_cyclops_p1_slam_64x64.png",
+    "order": 5,
+    "phase": "p1_slam",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": 1,
+    "source_sheet": "clyclops design maybe.png"
+  },
+  {
+    "boss": "CYCLOPS",
+    "filename": "05_cyclops_p2_blind_fury_64x64.png",
+    "order": 5,
+    "phase": "p2_blind_fury",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": 5,
+    "source_sheet": "clyclops design maybe.png"
+  },
+  {
+    "boss": "BEELZEBUB",
+    "filename": "06_beelzebub_p1_swarm_64x64.png",
+    "order": 6,
+    "phase": "p1_swarm",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": 1,
+    "source_sheet": "beezelbub design maybe.png"
+  },
+  {
+    "boss": "BEELZEBUB",
+    "filename": "06_beelzebub_p2_exposed_core_64x64.png",
+    "order": 6,
+    "phase": "p2_exposed_core",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": 9,
+    "source_sheet": "beezelbub design maybe.png"
+  },
+  {
+    "boss": "ASMODEUS",
+    "filename": "07_asmodeus_p1_ram_64x64.png",
+    "order": 7,
+    "phase": "p1_ram",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": 1,
+    "source_sheet": "asmodeous design maybe.png"
+  },
+  {
+    "boss": "ASMODEUS",
+    "filename": "07_asmodeus_p2_bull_64x64.png",
+    "order": 7,
+    "phase": "p2_bull",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": 2,
+    "source_sheet": "asmodeous design maybe.png"
+  },
+  {
+    "boss": "ASMODEUS",
+    "filename": "07_asmodeus_p3_man_64x64.png",
+    "order": 7,
+    "phase": "p3_man",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": 4,
+    "source_sheet": "asmodeous design maybe.png"
+  },
+  {
+    "boss": "AZAZEL",
+    "filename": "08_azazel_p1_storm_64x64.png",
+    "order": 8,
+    "phase": "p1_storm",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": 1,
+    "source_sheet": "azazael design maybe.png"
+  },
+  {
+    "boss": "AZAZEL",
+    "filename": "08_azazel_p2_slam_64x64.png",
+    "order": 8,
+    "phase": "p2_slam",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": 12,
+    "source_sheet": "azazael design maybe.png"
+  },
+  {
+    "boss": "BELIAL",
+    "filename": "09_belial_p1_elusive_48x64.png",
+    "order": 9,
+    "phase": "p1_elusive",
+    "size": [
+      48,
+      64
+    ],
+    "source_index": 2,
+    "source_sheet": "belial design maybe.png"
+  },
+  {
+    "boss": "BELIAL",
+    "filename": "09_belial_p2_bare_bone_48x64.png",
+    "order": 9,
+    "phase": "p2_bare_bone",
+    "size": [
+      48,
+      64
+    ],
+    "source_index": 17,
+    "source_sheet": "belial design maybe.png"
+  },
+  {
+    "boss": "LEVIATHAN",
+    "filename": "10_leviathan_p1_breach_64x64.png",
+    "order": 10,
+    "phase": "p1_breach",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": 2,
+    "source_sheet": "leviathan design maybe.png"
+  },
+  {
+    "boss": "LEVIATHAN",
+    "filename": "10_leviathan_p2_gate_64x64.png",
+    "order": 10,
+    "phase": "p2_gate",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": 6,
+    "source_sheet": "leviathan design maybe.png"
+  },
+  {
+    "boss": "BEHEMOTH",
+    "filename": "11_behemoth_p1_tread_64x64.png",
+    "order": 11,
+    "phase": "p1_tread",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": 1,
+    "source_sheet": "behemetoh designn maybe.png"
+  },
+  {
+    "boss": "BEHEMOTH",
+    "filename": "11_behemoth_p2_gluttony_64x64.png",
+    "order": 11,
+    "phase": "p2_gluttony",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": 19,
+    "source_sheet": "behemetoh designn maybe.png"
+  },
+  {
+    "boss": "MAMMON",
+    "filename": "12_mammon_p1_hoard_64x64.png",
+    "order": 12,
+    "phase": "p1_hoard",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": 1,
+    "source_sheet": "mammon design maybe.png"
+  },
+  {
+    "boss": "MAMMON",
+    "filename": "12_mammon_p2_liquid_gold_64x64.png",
+    "order": 12,
+    "phase": "p2_liquid_gold",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": 8,
+    "source_sheet": "mammon design maybe.png"
+  },
+  {
+    "boss": "ABADDON",
+    "filename": "13_abaddon_p1_locust_king_64x64.png",
+    "order": 13,
+    "phase": "p1_locust_king",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": 4,
+    "source_sheet": "abadon design maybe.png"
+  },
+  {
+    "boss": "ABADDON",
+    "filename": "13_abaddon_p2_unshelled_64x64.png",
+    "order": 13,
+    "phase": "p2_unshelled",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": 15,
+    "source_sheet": "abadon design maybe.png"
+  },
+  {
+    "boss": "SUCCUBUS & INCUBUS",
+    "filename": "14_succubus_incubus_p1_tether_32x48.png",
+    "order": 14,
+    "phase": "p1_tether",
+    "size": [
+      32,
+      48
+    ],
+    "source_index": 3,
+    "source_sheet": "sucubus design maybe.png"
+  },
+  {
+    "boss": "SUCCUBUS & INCUBUS",
+    "filename": "14_succubus_incubus_p2_nightmare_64x64.png",
+    "order": 14,
+    "phase": "p2_nightmare",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": 13,
+    "source_sheet": "sucubus design maybe.png"
+  },
+  {
+    "boss": "HELLHOUND",
+    "filename": "15_hellhound_p1_hunt_64x48.png",
+    "order": 15,
+    "phase": "p1_hunt",
+    "size": [
+      64,
+      48
+    ],
+    "source_index": 1,
+    "source_sheet": "Hellhound desing maybe.png"
+  },
+  {
+    "boss": "HELLHOUND",
+    "filename": "15_hellhound_p2_blazing_specter_64x48.png",
+    "order": 15,
+    "phase": "p2_blazing_specter",
+    "size": [
+      64,
+      48
+    ],
+    "source_index": 15,
+    "source_sheet": "Hellhound desing maybe.png"
+  },
+  {
+    "boss": "ONI",
+    "filename": "16_oni_p1_kanabo_64x64.png",
+    "order": 16,
+    "phase": "p1_kanabo",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": 1,
+    "source_sheet": "Oni design maybe.png"
+  },
+  {
+    "boss": "ONI",
+    "filename": "16_oni_p2_anchor_64x64.png",
+    "order": 16,
+    "phase": "p2_anchor",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": 16,
+    "source_sheet": "Oni design maybe.png"
+  },
+  {
+    "boss": "GORGON",
+    "filename": "17_gorgon_p1_petrify_48x64.png",
+    "order": 17,
+    "phase": "p1_petrify",
+    "size": [
+      48,
+      64
+    ],
+    "source_index": 1,
+    "source_sheet": "Gorgon desing maybe.png"
+  },
+  {
+    "boss": "GORGON",
+    "filename": "17_gorgon_p2_shed_skin_48x64.png",
+    "order": 17,
+    "phase": "p2_shed_skin",
+    "size": [
+      48,
+      64
+    ],
+    "source_index": 19,
+    "source_sheet": "Gorgon desing maybe.png"
+  },
+  {
+    "boss": "PRETA",
+    "filename": "18_preta_p1_hunger_48x64.png",
+    "order": 18,
+    "phase": "p1_hunger",
+    "size": [
+      48,
+      64
+    ],
+    "source_index": 1,
+    "source_sheet": "Preta design maybe.png"
+  },
+  {
+    "boss": "PRETA",
+    "filename": "18_preta_p2_rupture_32x32.png",
+    "order": 18,
+    "phase": "p2_rupture",
+    "size": [
+      32,
+      32
+    ],
+    "source_index": 17,
+    "source_sheet": "Preta design maybe.png"
+  },
+  {
+    "boss": "RAKSHASA",
+    "filename": "19_rakshasa_p1_three_faces_64x64.png",
+    "order": 19,
+    "phase": "p1_three_faces",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": 1,
+    "source_sheet": "Rakasha design maybe.png"
+  },
+  {
+    "boss": "RAKSHASA",
+    "filename": "19_rakshasa_p2_masks_32x32.png",
+    "order": 19,
+    "phase": "p2_masks",
+    "size": [
+      32,
+      32
+    ],
+    "source_index": 16,
+    "source_sheet": "Rakasha design maybe.png"
+  },
+  {
+    "boss": "GHOULS",
+    "filename": "20_ghouls_p1_pack_48x48.png",
+    "order": 20,
+    "phase": "p1_pack",
+    "size": [
+      48,
+      48
+    ],
+    "source_index": null,
+    "source_sheet": "Ghoul designs maybe.png"
+  },
+  {
+    "boss": "GHOULS",
+    "filename": "20_ghouls_p2_alpha_96x64.png",
+    "order": 20,
+    "phase": "p2_alpha",
+    "size": [
+      96,
+      64
+    ],
+    "source_index": null,
+    "source_sheet": "Ghoul designs maybe.png"
+  },
+  {
+    "boss": "HADES \u2014 RULER OF HELL",
+    "filename": "21_hades_ruler_of_hell_p1_arbiter_64x64.png",
+    "order": 21,
+    "phase": "p1_arbiter",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": 1,
+    "source_sheet": "Hades Design maybe.png"
+  },
+  {
+    "boss": "HADES \u2014 RULER OF HELL",
+    "filename": "21_hades_ruler_of_hell_p2_helm_64x64.png",
+    "order": 21,
+    "phase": "p2_helm",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": null,
+    "source_sheet": "Hades Design maybe.png"
+  },
+  {
+    "boss": "HADES \u2014 RULER OF HELL",
+    "filename": "21_hades_ruler_of_hell_p4_tartarus_64x64.png",
+    "order": 21,
+    "phase": "p4_tartarus",
+    "size": [
+      64,
+      64
+    ],
+    "source_index": null,
+    "source_sheet": "Hades Design maybe.png"
+  },
+  {
+    "boss": "HADES \u2014 RULER OF HELL",
+    "filename": "21_hades_ruler_of_hell_p5_core_48x48.png",
+    "order": 21,
+    "phase": "p5_core",
+    "size": [
+      48,
+      48
+    ],
+    "source_index": null,
+    "source_sheet": "Hades Design maybe.png"
+  }
+]

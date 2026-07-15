@@ -1,0 +1,285 @@
+{
+  "character": "gore",
+  "scale": 0.470588,
+  "source_sheet": "Gore_reference.png",
+  "sprite_count": 23,
+  "sprite_size": 48,
+  "sprites": [
+    {
+      "action": "idle",
+      "direction": "front",
+      "filename": "gore_idle_front_01_48x48.png",
+      "frame": 1,
+      "source_box": [
+        47,
+        121,
+        140,
+        227
+      ]
+    },
+    {
+      "action": "idle",
+      "direction": "front",
+      "filename": "gore_idle_front_02_48x48.png",
+      "frame": 2,
+      "source_box": [
+        146,
+        121,
+        239,
+        227
+      ]
+    },
+    {
+      "action": "walk",
+      "direction": "front",
+      "filename": "gore_walk_front_01_48x48.png",
+      "frame": 1,
+      "source_box": [
+        364,
+        121,
+        458,
+        227
+      ]
+    },
+    {
+      "action": "walk",
+      "direction": "front",
+      "filename": "gore_walk_front_02_48x48.png",
+      "frame": 2,
+      "source_box": [
+        464,
+        121,
+        558,
+        227
+      ]
+    },
+    {
+      "action": "walk",
+      "direction": "front",
+      "filename": "gore_walk_front_03_48x48.png",
+      "frame": 3,
+      "source_box": [
+        564,
+        121,
+        658,
+        227
+      ]
+    },
+    {
+      "action": "idle",
+      "direction": "right",
+      "filename": "gore_idle_right_01_48x48.png",
+      "frame": 1,
+      "source_box": [
+        47,
+        292,
+        142,
+        392
+      ]
+    },
+    {
+      "action": "idle",
+      "direction": "right",
+      "filename": "gore_idle_right_02_48x48.png",
+      "frame": 2,
+      "source_box": [
+        147,
+        292,
+        242,
+        392
+      ]
+    },
+    {
+      "action": "walk",
+      "direction": "right",
+      "filename": "gore_walk_right_01_48x48.png",
+      "frame": 1,
+      "source_box": [
+        264,
+        292,
+        358,
+        392
+      ]
+    },
+    {
+      "action": "walk",
+      "direction": "right",
+      "filename": "gore_walk_right_02_48x48.png",
+      "frame": 2,
+      "source_box": [
+        364,
+        292,
+        458,
+        392
+      ]
+    },
+    {
+      "action": "walk",
+      "direction": "right",
+      "filename": "gore_walk_right_03_48x48.png",
+      "frame": 3,
+      "source_box": [
+        464,
+        292,
+        558,
+        392
+      ]
+    },
+    {
+      "action": "walk",
+      "direction": "right",
+      "filename": "gore_walk_right_04_48x48.png",
+      "frame": 4,
+      "source_box": [
+        563,
+        292,
+        658,
+        392
+      ]
+    },
+    {
+      "action": "idle",
+      "direction": "left",
+      "filename": "gore_idle_left_01_48x48.png",
+      "frame": 1,
+      "source_box": [
+        47,
+        454,
+        143,
+        554
+      ]
+    },
+    {
+      "action": "idle",
+      "direction": "left",
+      "filename": "gore_idle_left_02_48x48.png",
+      "frame": 2,
+      "source_box": [
+        149,
+        454,
+        246,
+        554
+      ]
+    },
+    {
+      "action": "walk",
+      "direction": "left",
+      "filename": "gore_walk_left_01_48x48.png",
+      "frame": 1,
+      "source_box": [
+        265,
+        454,
+        359,
+        554
+      ]
+    },
+    {
+      "action": "walk",
+      "direction": "left",
+      "filename": "gore_walk_left_02_48x48.png",
+      "frame": 2,
+      "source_box": [
+        364,
+        454,
+        459,
+        554
+      ]
+    },
+    {
+      "action": "walk",
+      "direction": "left",
+      "filename": "gore_walk_left_03_48x48.png",
+      "frame": 3,
+      "source_box": [
+        465,
+        454,
+        559,
+        554
+      ]
+    },
+    {
+      "action": "walk",
+      "direction": "left",
+      "filename": "gore_walk_left_04_48x48.png",
+      "frame": 4,
+      "source_box": [
+        563,
+        454,
+        659,
+        554
+      ]
+    },
+    {
+      "action": "idle",
+      "direction": "back",
+      "filename": "gore_idle_back_01_48x48.png",
+      "frame": 1,
+      "source_box": [
+        46,
+        599,
+        143,
+        698
+      ]
+    },
+    {
+      "action": "idle",
+      "direction": "back",
+      "filename": "gore_idle_back_02_48x48.png",
+      "frame": 2,
+      "source_box": [
+        148,
+        599,
+        246,
+        698
+      ]
+    },
+    {
+      "action": "walk",
+      "direction": "back",
+      "filename": "gore_walk_back_01_48x48.png",
+      "frame": 1,
+      "source_box": [
+        265,
+        599,
+        359,
+        698
+      ]
+    },
+    {
+      "action": "walk",
+      "direction": "back",
+      "filename": "gore_walk_back_02_48x48.png",
+      "frame": 2,
+      "source_box": [
+        364,
+        599,
+        459,
+        698
+      ]
+    },
+    {
+      "action": "walk",
+      "direction": "back",
+      "filename": "gore_walk_back_03_48x48.png",
+      "frame": 3,
+      "source_box": [
+        465,
+        599,
+        559,
+        698
+      ]
+    },
+    {
+      "action": "walk",
+      "direction": "back",
+      "filename": "gore_walk_back_04_48x48.png",
+      "frame": 4,
+      "source_box": [
+        563,
+        599,
+        659,
+        698
+      ]
+    }
+  ]
+}
