@@ -1,0 +1,3 @@
+  if(k==='j'&&(mode===S.HALL||mode===S.BOSS)){ foes=[]; boss=null; doorOpen=true; }
+  if((k===']'||k==='[')&&(mode===S.BOSS||mode===S.HALL||mode===S.FARM)){ warpBoss(k===']'?1:-1); return; }
+  if(k==='\\'){ window.TESTDMG=!window.TESTDMG; say('MEGA DAMAGE '+(window.TESTDMG?'ON':'OFF')); return; }
