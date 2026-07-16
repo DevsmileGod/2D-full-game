@@ -8,7 +8,6 @@ how to run it, and exactly what changed.
 | File | What it is |
 |------|-----------|
 | **`hell-farmers.html`** | **The game — this is the file you ship.** Single self-contained HTML file; all art is embedded, nothing else to host. |
-| `hell-farmers-TESTBUILD.html` | An optional **inspection build** for reviewing every boss quickly. Do **not** ship this one — see below. |
 | **`boss-phase-showcase.html`** | A visual gallery of **all 21 bosses across every phase** (48 sprites) — the exact art now wired into the game. Open in a browser. |
 | `screenshots/` | In-game reference PNGs of the Cerberus phase swaps + the new enemy critters. |
 | `CHANGELOG.md` | The detailed, boss-by-boss breakdown of everything that changed. |
@@ -47,19 +46,6 @@ Full detail — boss by boss, phase by phase — is in **`CHANGELOG.md`**.
   hidden watermarks.
 - **Gameplay and balance untouched.** This was a visuals/feel pass only, as agreed —
   no numbers, hit-points, or mechanics were changed.
-
-## About the test build (optional)
-
-`hell-farmers-TESTBUILD.html` is a throwaway tool for reviewing the roster fast — it is
-**not** for shipping. It adds a banner and these helpers:
-
-- You **can't die** (invulnerability on by default; **G** toggles it).
-- **`]`** next boss · **`[`** previous boss — warp straight through all 21 bosses
-  (Cerberus → Hades) without grinding.
-- **`\`** mega-damage — melt a boss to watch its phase changes and death.
-- **R** restart.
-
-Use it to eyeball every boss and phase, then ship `hell-farmers.html`.
 
 ---
 

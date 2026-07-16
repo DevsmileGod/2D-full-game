@@ -549,6 +549,8 @@ const S={FARM:0,HALL:1,BOSS:2,SKILL:3,DEAD:4,WIN:5,TITLE:6,INTRO:7,PAUSE:8,SELEC
 let mode, seg, room, day, tree, pts, spent, crops, seedBank;
 let solid, arena, foes, shots, beams, blights, mobs, tels, fx, drops;
 let boss=null, doorOpen, roomType, shake=0, msg='', msgT=0, now=0, god=false;
+let bossIntro=0;                 // ms remaining on the boss-entrance nameplate
+let phaseAnn=0, phaseAnnName='', fxFlash=0;   // boss phase-transition punch
 
 const BASE={maxHp:6,dmg:1,dmgMul:1,   // maxHp is in HALF-HEARTS: 6 = 3 hearts
   rate:1,spd:1,shotSpd:1,range:1,crit:0,critD:.5,
@@ -3042,6 +3044,7 @@ function enterBoss(){
   P.iframe=1200;
   setTimeout(saveRun,0);                        // checkpoint: the boss gate
   say(`BOSS GATE ${seg}/20 — ${D.name}`);
+  bossIntro=2400;                               // the name SLAMS in, holds, then fades
 }
 
 function nextRoom(){
@@ -3605,6 +3608,7 @@ function tryDash(){
   P.dashN--;
   P.dashQ.push(dashRecharge());          // charges refill INDEPENDENTLY
   shake=Math.max(shake,60);
+  for(let i=0;i<7;i++) burst(P.x-P.dashVX*0.02, P.y-4, 1, '#6a5a48');   // ground dust kicked off the launch
 }
 
 function updateDash(ms,dt){
@@ -3942,10 +3946,21 @@ function tickBoss(dt, ms){
     boss.invis=Math.max(0,boss.invis-ms);
     const p=phaseOf(boss);
     if(p!==boss.phase){
+      const old=boss.phase;                             // -1 on the very first assignment
       boss.phase=p;
       const ph=boss.def.phases[p];
       boss.phName=ph.name; boss.cd=600;
       ph.enter&&ph.enter(boss);
+      if(old>=0){                                       // a REAL phase change, not the spawn
+        /* PHASE-TRANSITION PUNCH — the form-change used to happen silently; the
+           sprite just swapped. Now it lands: a white pop, a kick, a shockwave off
+           the boss, and the new phase's name announced across the arena. */
+        phaseAnn=1400; phaseAnnName=ph.name;
+        fxFlash=Math.max(fxFlash,190);
+        shake=Math.max(shake,150);
+        ring(boss.x,boss.y,64,C.sulfur,440,3);
+        ring(boss.x,boss.y,32,C.bone,360,2);
+      }
     }
     if(boss.dotT>0){ boss.dotT-=ms; boss.dotAcc=(boss.dotAcc||0)+Math.max(1,stats.dot)*dt;
       if(boss.dotAcc>=1){ boss.hp-=1; boss.dotAcc=0; boss.hit=60; } }
@@ -4252,6 +4267,8 @@ function update(dt){
 
   const ms=dt*1000; FMS=ms;
   now+=ms; shake=Math.max(0,shake-ms); msgT=Math.max(0,msgT-ms);
+  bossIntro=Math.max(0,bossIntro-ms);
+  phaseAnn=Math.max(0,phaseAnn-ms); fxFlash=Math.max(0,fxFlash-ms);
   Music.setContext(musicContext());        // crossfades when the mood changes
 
   /* ---- ANTI-FREEZE ---- */
@@ -5990,8 +6007,15 @@ function foeBody(type,x,y,s,c,tell){
     cir(x, by, 8*s, c);                                            // fat body
     g.globalAlpha=.45; cir(x-2*s, by-2.5*s, 4.2*s, C.bone); g.globalAlpha=1;   // top sheen
     g.globalAlpha=.35; cir(x, by+3*s, 6*s, '#000'); g.globalAlpha=1;           // belly shade
+    g.globalAlpha=.25;                                             // segment bands — a grub, not a ball
+    px((x-7*s)|0,(by-1*s)|0,(14*s)|0,1,'#000'); px((x-6*s)|0,(by+2.5*s)|0,(12*s)|0,1,'#000');
+    g.globalAlpha=1;
+    const lstep=Math.sin(now/90+x)*s;                             // stubby crawling legs
+    px((x-5*s)|0,(by+6*s)|0,2,Math.max(1,(2*s+lstep)|0),'#00000055');
+    px((x+3*s)|0,(by+6*s)|0,2,Math.max(1,(2*s-lstep)|0),'#00000055');
     px((x-6*s)|0,(y-8*s+wob)|0,1,3*s,c); px((x+5*s)|0,(y-8*s-wob)|0,1,3*s,c);  // antennae
-    px((x-4*s)|0,(y-2*s+by-y)|0,2,2,'#180608'); px((x+2*s)|0,(y-2*s+by-y)|0,2,2,'#180608'); // eyes
+    px((x-4*s)|0,(by-2*s)|0,2,2,'#180608'); px((x+2*s)|0,(by-2*s)|0,2,2,'#180608'); // eyes
+    px((x-1*s)|0,(by+1*s)|0,Math.max(1,(2*s)|0),1,'#180608');      // mandible mouth
     return;
   }
   if(type==='imp'){
@@ -6046,6 +6070,85 @@ function drawFoe(f){
 
   const tell=f.dashT>0||f.cool<300;
   foeBody(f.type, x, y, 1, c, tell);
+}
+
+/* HALL MOBS — the last of the brief's "circles". fly / pup / ghoul / debris /
+   monolith / preta / spider each used to draw as one flat disc (or a plain box).
+   Each is now a small pixel creature in the game's own hand, with idle motion, so
+   nothing in a room is ever a dead shape. Hitboxes (m.r) are untouched. */
+function mobBody(m){
+  const x=Math.round(m.x), y=Math.round(m.y), r=m.r||7;
+  const hit=m.hit>0, t=now, bob=Math.sin(t/150+x*0.3);
+  switch(m.type){
+    case 'fly': {
+      const bc=hit?C.bone:'#3a4a1a', fl=Math.sin(t/40+x)*2;
+      g.globalAlpha=.5;
+      px(x-7,(y-2-fl)|0,6,3,'#9adcd0'); px(x+1,(y-2+fl)|0,6,3,'#9adcd0');   // buzzing wings
+      g.globalAlpha=1;
+      px(x-3,(y-3+bob*0.5)|0,6,7,bc);                                       // segmented body
+      px(x-3,(y+1+bob*0.5)|0,6,2,'#1a2410');                                // belly band
+      px(x-2,(y-5+bob*0.5)|0,4,3,'#c8324a'); px(x-2,(y-5+bob*0.5)|0,2,1,'#ff8a9a'); // red eye
+      break; }
+    case 'pup': {
+      const bc=hit?C.bone:'#33334a', step=Math.sin(t/80+x)*1.4;
+      px(x-6,(y-2+bob*0.4)|0,11,6,bc);            // body
+      px(x-8,(y-4)|0,3,3,bc);                     // tail
+      px(x+4,(y-5+bob*0.4)|0,5,5,bc);             // head
+      px(x+6,(y-7)|0,2,2,bc);                     // ear
+      px(x+6,(y-3)|0,2,2,C.ember);                // ember eye
+      px(x-4,(y+3)|0,2,Math.max(1,(3+step)|0),'#15151f'); px(x+2,(y+3)|0,2,Math.max(1,(3-step)|0),'#15151f'); // legs
+      break; }
+    case 'ghoul': {
+      const bc=hit?C.bone:'#6a5a4a';
+      px(x-4,(y-6+bob*0.5)|0,8,11,bc);            // hunched torso
+      px(x-6,(y-9+bob*0.5)|0,6,6,'#9a8a76');      // pale bowed head
+      px(x-5,(y-7+bob*0.5)|0,2,2,'#c8324a');      // sunken eye
+      px(x+3,(y-4)|0,3,9,bc);                     // long dangling arm
+      px(x-6,(y-3)|0,2,7,bc);                     // other arm
+      px(x-3,(y+4)|0,2,3,'#3a3028'); px(x+1,(y+4)|0,2,3,'#3a3028'); // feet
+      break; }
+    case 'debris': {
+      const bc=hit?C.bone:C.rockLip;
+      px(x-6,y-1,12,7,'#5a4a3a');                 // rubble base
+      px(x-4,y-5,9,5,bc);                         // upper chunk
+      px(x-4,y-5,9,2,'#7a6a54');                  // lit top
+      px(x-1,y-3,3,2,'#332a20'); px(x+2,y+2,3,2,'#332a20'); // cracks
+      break; }
+    case 'monolith': {
+      const bc=hit?C.bone:'#4a3a5a';
+      px(x-7,y-14,14,26,bc);                      // standing stone
+      px(x-7,y-14,14,3,'#8a7ab8');                // lit crown
+      px(x-5,y-6,10,1,'#2e2438');                 // carved seam
+      const gl=.45+.45*Math.sin(t/300);
+      g.globalAlpha=gl; px(x-2,y-7,4,7,'#c89adc'); g.globalAlpha=1;   // glowing rune
+      break; }
+    case 'preta': {
+      const bc=hit?C.bone:'#8a8a6a';
+      cir(x,y+2,r+1,bc);                          // distended hunger-belly
+      g.globalAlpha=.3; cir(x,y+4,r*0.7,'#000'); g.globalAlpha=1;     // belly shade
+      px(x-2,(y-r-3+bob*0.5)|0,4,4,'#aaa98a');    // shrunken head
+      px(x-2,(y-r-2)|0,1,1,'#c8324a'); px(x+1,(y-r-2)|0,1,1,'#c8324a'); // pinprick eyes
+      px((x-r-1)|0,y-1,2,5,bc); px((x+r-1)|0,y-1,2,5,bc); // thin starving arms
+      break; }
+    case 'spider': {
+      const bc=hit?C.bone:'#2a2030', lg=Math.sin(t/60+x)*1.5;
+      g.strokeStyle=bc; g.lineWidth=1; g.beginPath();
+      for(let i=0;i<3;i++){ const ly=y-2+i*2;
+        g.moveTo(x-1,ly); g.lineTo(x-6,ly-1+lg*(i-1));
+        g.moveTo(x+1,ly); g.lineTo(x+6,ly-1-lg*(i-1)); }
+      g.stroke();
+      cir(x,y,r*0.7,bc);                          // body
+      px(x-2,y-1,1,1,'#c8324a'); px(x+1,y-1,1,1,'#c8324a'); // eyes
+      break; }
+    default: {                                    // wispy shade
+      const bc=hit?C.bone:C.blood;
+      g.globalAlpha=.9; px(x-4,(y-6+bob*0.6)|0,8,9,bc); g.globalAlpha=1;
+      g.globalAlpha=.4;
+      px(x-4,y+2,2,Math.max(1,(4+bob)|0),bc); px(x-1,y+2,2,Math.max(1,(5-bob)|0),bc); px(x+2,y+2,2,Math.max(1,(4+bob)|0),bc);
+      g.globalAlpha=1;
+      px(x-2,(y-3+bob*0.6)|0,2,2,C.sulfur); px(x+1,(y-3+bob*0.6)|0,2,2,C.sulfur);
+    }
+  }
 }
 
 /* ==========================================================================
@@ -6315,6 +6418,12 @@ function drawBoss(){
   /* boss bar */
   const w=280, bx=(VIEW_W-w)/2;
   px(bx-1,VIEW_H-22,w+2,9,'#000');
+  /* CHIP DAMAGE — a pale 'ghost' lags a beat behind the real bar and then drains
+     down to it, so a big hit reads as a satisfying chunk taken instead of the bar
+     just being shorter next frame. Snaps up on heal / phase re-fill. */
+  if(b.hpGhost===undefined || b.hp>b.hpGhost) b.hpGhost=b.hp;
+  else b.hpGhost += (b.hp-b.hpGhost)*Math.min(1, (FMS||16)/150);
+  px(bx,VIEW_H-21,(b.hpGhost/b.maxHp)*w,7,'#e8dcc8');   // ghost trail (bone)
   px(bx,VIEW_H-21,(b.hp/b.maxHp)*w,7, b.shield?'#4a5a2a':C.blood);
   txt(`${seg} · ${b.name}`,bx,VIEW_H-33,C.bone,9);
   txt(b.phName,bx+w-b.phName.length*5.4,VIEW_H-33,C.sulfur,9);
@@ -6871,6 +6980,60 @@ function present(){
   sc.drawImage(back,0,0,SCREEN_W,SCREEN_H,0,0,SCREEN_W*scale,SCREEN_H*scale);
 }
 
+/* BOSS ENTRANCE NAMEPLATE — the name used to sit quietly in the HUD; now it
+   SLAMS across the arena when you walk in, holds a beat, and fades. A free
+   moment of theatre on every one of the 21 gates. Purely presentational. */
+function drawBossIntro(){
+  if(bossIntro<=0 || !boss || mode!==S.BOSS) return;
+  const t   = 2400 - bossIntro;                 // ms elapsed since entry
+  const inK  = Math.min(1, t/280);              // slam-in
+  const outK = Math.min(1, bossIntro/500);      // fade over the final 500ms
+  const a = Math.min(inK, outK);
+  if(a<=0) return;
+  const ease = 1-Math.pow(1-inK,3);             // ease-out for the settle
+  const cy = VIEW_H*0.30;
+
+  const bandH = 2 + 46*ease;                    // dark reading band behind the text
+  const grd = g.createLinearGradient(0,cy-bandH/2,0,cy+bandH/2);
+  grd.addColorStop(0,'rgba(0,0,0,0)');
+  grd.addColorStop(.5,`rgba(8,4,6,${(a*0.82).toFixed(3)})`);
+  grd.addColorStop(1,'rgba(0,0,0,0)');
+  g.fillStyle=grd; g.fillRect(0,cy-bandH/2,VIEW_W,bandH);
+
+  g.textAlign='center'; g.textBaseline='middle';
+  g.globalAlpha=a*0.9;
+  g.fillStyle=C.blood; g.font='9px ui-monospace,monospace';
+  g.fillText(`BOSS GATE ${seg}/20`, VIEW_W/2, cy-20);
+
+  g.globalAlpha=a;
+  g.fillStyle=C.ember; g.font='26px ui-monospace,monospace';
+  g.fillText(boss.name, VIEW_W/2, cy + (1-ease)*10);   // slides up and settles
+
+  const rw = (0.16+0.5*ease) * Math.min(VIEW_W-48, boss.name.length*17);
+  g.globalAlpha=a*0.8;
+  px(VIEW_W/2 - rw/2, cy+17, rw, 1, C.sulfur);         // thin rule under the name
+
+  g.globalAlpha=1; g.textAlign='left'; g.textBaseline='top';
+}
+
+/* The new phase's name, announced mid-arena for a beat when a boss changes form.
+   Smaller and quicker than the entrance plate — punctuation, not a title card. */
+function drawPhaseAnn(){
+  if(phaseAnn<=0 || !boss || mode!==S.BOSS) return;
+  const t=1400-phaseAnn;
+  const a=Math.min(Math.min(1,t/200), Math.min(1,phaseAnn/400));
+  if(a<=0) return;
+  const cy=VIEW_H*0.44;
+  g.textAlign='center'; g.textBaseline='middle';
+  g.globalAlpha=a*0.85;
+  g.fillStyle=C.sulfur; g.font='8px ui-monospace,monospace';
+  g.fillText('· NEW PHASE ·', VIEW_W/2, cy-13);
+  g.globalAlpha=a;
+  g.fillStyle=C.bone; g.font='18px ui-monospace,monospace';
+  g.fillText(phaseAnnName, VIEW_W/2, cy);
+  g.globalAlpha=1; g.textAlign='left'; g.textBaseline='top';
+}
+
 function render(){
   if(mode===S.INTRO){
     drawCinematic();
@@ -6964,14 +7127,7 @@ function render(){
     else { px(d.x-9,yy-7,18,14,'#8a6a2a'); px(d.x-9,yy-2,18,3,C.sulfur);
       if(d.kind==='mimic'){ px(d.x-6,yy-4,3,3,C.blood); px(d.x+3,yy-4,3,3,C.blood); } }
   }
-  for(const m of mobs){
-    const c=m.hit?C.bone:
-      m.type==='fly'?'#3a4a1a':m.type==='pup'?'#2a2a3a':m.type==='ghoul'?'#6a5a4a':
-      m.type==='debris'?C.rockLip:m.type==='monolith'?'#4a3a5a':
-      m.type==='preta'?'#8a8a6a':C.blood;
-    if(m.type==='monolith'){ px(m.x-8,m.y-14,16,26,c); px(m.x-8,m.y-14,16,3,'#8a7ab8'); }
-    else cir(m.x,m.y,m.r,c);
-  }
+  for(const m of mobs) mobBody(m);
   drawGroundItems();
   for(const f of foes) drawFoe(f);
   if(boss) drawBoss();
@@ -7001,6 +7157,37 @@ function render(){
   }
   g.restore();
 
+  /* ==========================================================================
+     ATMOSPHERE — screen-space, drawn over the settled world (post-shake) so it
+     reads as air in front of the camera, not scenery that jitters with a hit.
+     All of it is additive mood only; it yields to the dark/storm arena systems
+     below so it never fights a room that already has its own weather.
+     ========================================================================== */
+  /* Ambient embers: a handful of soft motes drifting UP through every fight, so
+     even a cleared arena still smoulders. Deterministic (no per-frame RNG) so
+     they glide instead of flicker. Steps aside in storm/pitch-dark rooms. */
+  if((mode===S.HALL||mode===S.BOSS) && !(arena&&arena.storm) && !(arena&&arena.dark>0.5)){
+    for(let i=0;i<16;i++){
+      const x=(i*101 + now*0.006*(1+(i%3)))%VIEW_W;
+      const y= VIEW_H - ((i*67 + now*0.02*(1+(i%2))) % (VIEW_H+24));
+      const tw=0.05+0.07*Math.sin(now/620+i*1.7);
+      if(tw<=0) continue;
+      g.globalAlpha=tw;
+      const s=i%4?1:2; px(x|0,y|0,s,s, i%3?C.ember:C.sulfur);
+    }
+    g.globalAlpha=1;
+  }
+  /* Vignette: draw the eye to the middle of the action. Subtle in the halls, a
+     shade heavier in a boss arena. Skipped where a dark arena already owns the
+     edges, so those rooms don't double up into pitch black. */
+  if(mode!==S.SELECT && !(arena&&arena.dark>0.35)){
+    const heavy = mode===S.BOSS ? 0.44 : 0.30;
+    const vg=g.createRadialGradient(VIEW_W/2,VIEW_H/2, VIEW_H*0.34, VIEW_W/2,VIEW_H/2, VIEW_H*0.80);
+    vg.addColorStop(0,'rgba(0,0,0,0)');
+    vg.addColorStop(1,`rgba(6,3,6,${heavy})`);
+    g.fillStyle=vg; g.fillRect(0,0,VIEW_W,VIEW_H);
+  }
+
   if(arena&&arena.dark>0){
     /* SHADOW SWAP: a tiny personal glow, and a big flash when you fire.
        You navigate by muzzle light. */
@@ -7020,8 +7207,33 @@ function render(){
     g.globalAlpha=1;
   }
 
+  /* LOW-HEALTH DANGER — when your hearts run low the screen edges throb blood-red,
+     faster the closer you are to death. Pure feedback: it changes nothing about
+     the fight, it just lets you FEEL the danger a beat before you read the HUD. */
+  if((mode===S.HALL||mode===S.BOSS) && stats.maxHp>0 && P.hp>0){
+    const frac=P.hp/stats.maxHp;
+    if(frac<=0.34){
+      const danger=1-frac/0.34;                          // 0 at the threshold, →1 near death
+      const beat=0.5+0.5*Math.sin(now/(150+frac*280));   // pulse quickens as HP falls
+      const a=(0.10+0.28*danger)*(0.5+0.5*beat);
+      const rg=g.createRadialGradient(VIEW_W/2,VIEW_H/2, VIEW_H*0.28, VIEW_W/2,VIEW_H/2, VIEW_H*0.82);
+      rg.addColorStop(0,'rgba(0,0,0,0)');
+      rg.addColorStop(1,`rgba(200,50,74,${a.toFixed(3)})`);
+      g.fillStyle=rg; g.fillRect(0,0,VIEW_W,VIEW_H);
+    }
+  }
+
+  /* phase-transition white pop — a quick bloom over the world as a boss shifts form */
+  if(fxFlash>0){
+    g.globalAlpha=Math.min(0.4, (fxFlash/190)*0.4);
+    g.fillStyle='#fff8ee'; g.fillRect(0,0,VIEW_W,VIEW_H);
+    g.globalAlpha=1;
+  }
+
   drawHUD();
   drawInventory();
+  drawBossIntro();
+  drawPhaseAnn();
   if(hoverItem && mode!==S.SKILL) drawItemCard(hoverItem);
   if(!paused) drawCursor();
   if(mode===S.SKILL) drawSkill();

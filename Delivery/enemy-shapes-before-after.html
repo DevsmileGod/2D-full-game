@@ -1,0 +1,184 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hell Farmers — Enemy Shapes, Before & After</title>
+<style>
+  :root{
+    --bg:#0d0a0b; --bg2:#141011; --panel:#1a1416; --line:#2c2224;
+    --sulfur:#ffd24a; --ember:#ff7a2f; --blood:#c8324a; --bone:#e8dcc8;
+    --ink:#e8dcc8; --dim:#9a8f88; --faint:#6c625e;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; color:var(--ink);
+    background:radial-gradient(1200px 600px at 50% -10%, #2a1416 0%, transparent 60%), var(--bg);
+    font-family:ui-sans-serif,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px; margin:0 auto; padding:0 24px 110px}
+  header.hero{padding:64px 24px 30px; text-align:center; max-width:1080px; margin:0 auto}
+  .kicker{font-family:ui-monospace,Consolas,monospace; letter-spacing:.34em; text-transform:uppercase;
+    font-size:12px; color:var(--ember); margin:0 0 16px}
+  h1{font-size:clamp(30px,5.4vw,52px); line-height:1.03; margin:0 0 16px; font-weight:800; letter-spacing:-.02em;
+    text-wrap:balance;
+    background:linear-gradient(180deg,#fff 0%, var(--sulfur) 60%, var(--ember) 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent; text-shadow:0 0 40px rgba(255,122,47,.18)}
+  .sub{color:var(--dim); font-size:16px; max-width:640px; margin:0 auto; text-wrap:pretty}
+  .sub b{color:var(--bone)}
+  .rule{height:1px; background:linear-gradient(90deg,transparent,var(--line),transparent); margin:26px auto 0; max-width:1080px}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:18px; margin-top:34px}
+  .card{border:1px solid var(--line); border-radius:16px; overflow:hidden;
+    background:linear-gradient(180deg,var(--bg2),var(--panel))}
+  .card h2{margin:0; padding:15px 18px 2px; font-size:19px; font-weight:800; color:var(--bone); letter-spacing:.01em}
+  .card .desc{padding:0 18px 12px; margin:0; color:var(--faint); font-size:12.5px;
+    font-family:ui-monospace,Consolas,monospace}
+  .pair{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border-top:1px solid var(--line)}
+  .cell{background:radial-gradient(120% 120% at 50% 30%, #241a1c 0%, #100c0d 72%); padding:12px 0 8px;
+    display:flex; flex-direction:column; align-items:center; gap:7px}
+  .cell canvas{width:150px; height:150px; image-rendering:pixelated;
+    filter:drop-shadow(0 5px 8px rgba(0,0,0,.5))}
+  .tag{font-family:ui-monospace,Consolas,monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase}
+  .before .tag{color:var(--faint)} .after .tag{color:var(--sulfur)}
+  .cell.after{box-shadow:inset 0 0 0 1px rgba(255,210,74,.05)}
+  footer{text-align:center; color:var(--faint); font-size:12.5px; margin-top:60px;
+    font-family:ui-monospace,Consolas,monospace}
+  footer .note{color:var(--dim); font-family:ui-sans-serif,system-ui,sans-serif; max-width:640px;
+    margin:0 auto 10px; font-size:13.5px; line-height:1.55}
+</style>
+
+<header class="hero">
+  <p class="kicker">Hell Farmers &middot; Polish Pass</p>
+  <h1>Enemy Shapes &mdash; Before &amp; After</h1>
+  <p class="sub">The small enemies that fill the 100 Hall rooms were the last of the brief's
+  &ldquo;circles&rdquo; &mdash; each drew as one flat disc (or a plain box). Every one is now a
+  hand-drawn pixel creature with idle motion. <b>Hitboxes are unchanged &mdash; this is purely how
+  they're drawn.</b> These panels are the <b>real draw code</b>, running live; drag nothing, just watch.</p>
+</header>
+<div class="rule"></div>
+
+<main class="wrap">
+  <div class="grid" id="grid"></div>
+  <footer>
+    <p class="note">Left = the old flat shape. Right = the new creature, animated exactly as it renders
+    in-game. No AI-generated art anywhere &mdash; every pixel is procedural, in the game's own hand.</p>
+    Hell Farmers &mdash; Hall-enemy shapes &middot; before &amp; after
+  </footer>
+</main>
+
+<script>
+const C={ bone:'#e8dcc8', blood:'#c8324a', ember:'#ff7a2f', sulfur:'#ffd24a',
+  rockLip:'#5e3f52', grub:'#7a9b4a' };
+let now=0;
+
+function px(g,x,y,w,h,col){ g.fillStyle=col; g.fillRect(x|0,y|0,Math.max(1,w|0),Math.max(1,h|0)); }
+function cir(g,x,y,r,col){ g.fillStyle=col; g.beginPath(); g.arc(x,y,r,0,7); g.fill(); }
+
+/* ---- OLD: one flat circle (or, for the monolith, a plain box) ---- */
+function oldCircle(col,r){ return (g,x,y)=>cir(g,x,y,r,col); }
+function oldMonolith(g,x,y){ px(g,x-8,y-14,16,26,'#4a3a5a'); px(g,x-8,y-14,16,3,'#8a7ab8'); }
+function oldGrub(g,x,y){
+  const s=1.5, wob=Math.sin(now/150+x*0.7), by=y+wob*0.6;
+  cir(g,x,by,8*s,C.grub);
+  g.globalAlpha=.45; cir(g,x-2*s,by-2.5*s,4.2*s,C.bone); g.globalAlpha=1;
+  g.globalAlpha=.35; cir(g,x,by+3*s,6*s,'#000'); g.globalAlpha=1;
+  px(g,(x-6*s)|0,(y-8*s+wob)|0,1,3*s,C.grub); px(g,(x+5*s)|0,(y-8*s-wob)|0,1,3*s,C.grub);
+  px(g,(x-4*s)|0,(by-2*s)|0,2,2,'#180608'); px(g,(x+2*s)|0,(by-2*s)|0,2,2,'#180608');
+}
+
+/* ---- NEW: the actual mobBody / foeBody draw code, ported verbatim ---- */
+function newMob(type){ return (g,x,y)=>{
+  const r=7, t=now, bob=Math.sin(t/150+x*0.3);
+  switch(type){
+    case 'fly': {
+      const bc='#3a4a1a', fl=Math.sin(t/40+x)*2;
+      g.globalAlpha=.5; px(g,x-7,(y-2-fl)|0,6,3,'#9adcd0'); px(g,x+1,(y-2+fl)|0,6,3,'#9adcd0'); g.globalAlpha=1;
+      px(g,x-3,(y-3+bob*0.5)|0,6,7,bc); px(g,x-3,(y+1+bob*0.5)|0,6,2,'#1a2410');
+      px(g,x-2,(y-5+bob*0.5)|0,4,3,'#c8324a'); px(g,x-2,(y-5+bob*0.5)|0,2,1,'#ff8a9a'); break; }
+    case 'pup': {
+      const bc='#33334a', step=Math.sin(t/80+x)*1.4;
+      px(g,x-6,(y-2+bob*0.4)|0,11,6,bc); px(g,x-8,(y-4)|0,3,3,bc); px(g,x+4,(y-5+bob*0.4)|0,5,5,bc);
+      px(g,x+6,(y-7)|0,2,2,bc); px(g,x+6,(y-3)|0,2,2,C.ember);
+      px(g,x-4,(y+3)|0,2,Math.max(1,(3+step)|0),'#15151f'); px(g,x+2,(y+3)|0,2,Math.max(1,(3-step)|0),'#15151f'); break; }
+    case 'ghoul': {
+      const bc='#6a5a4a';
+      px(g,x-4,(y-6+bob*0.5)|0,8,11,bc); px(g,x-6,(y-9+bob*0.5)|0,6,6,'#9a8a76'); px(g,x-5,(y-7+bob*0.5)|0,2,2,'#c8324a');
+      px(g,x+3,(y-4)|0,3,9,bc); px(g,x-6,(y-3)|0,2,7,bc);
+      px(g,x-3,(y+4)|0,2,3,'#3a3028'); px(g,x+1,(y+4)|0,2,3,'#3a3028'); break; }
+    case 'debris': {
+      const bc=C.rockLip;
+      px(g,x-6,y-1,12,7,'#5a4a3a'); px(g,x-4,y-5,9,5,bc); px(g,x-4,y-5,9,2,'#7a6a54');
+      px(g,x-1,y-3,3,2,'#332a20'); px(g,x+2,y+2,3,2,'#332a20'); break; }
+    case 'monolith': {
+      const bc='#4a3a5a';
+      px(g,x-7,y-14,14,26,bc); px(g,x-7,y-14,14,3,'#8a7ab8'); px(g,x-5,y-6,10,1,'#2e2438');
+      const gl=.45+.45*Math.sin(t/300); g.globalAlpha=gl; px(g,x-2,y-7,4,7,'#c89adc'); g.globalAlpha=1; break; }
+    case 'preta': {
+      const bc='#8a8a6a';
+      cir(g,x,y+2,r+1,bc); g.globalAlpha=.3; cir(g,x,y+4,r*0.7,'#000'); g.globalAlpha=1;
+      px(g,x-2,(y-r-3+bob*0.5)|0,4,4,'#aaa98a'); px(g,x-2,(y-r-2)|0,1,1,'#c8324a'); px(g,x+1,(y-r-2)|0,1,1,'#c8324a');
+      px(g,(x-r-1)|0,y-1,2,5,bc); px(g,(x+r-1)|0,y-1,2,5,bc); break; }
+    case 'spider': {
+      const bc='#2a2030', lg=Math.sin(t/60+x)*1.5;
+      g.strokeStyle=bc; g.lineWidth=1; g.beginPath();
+      for(let i=0;i<3;i++){ const ly=y-2+i*2;
+        g.moveTo(x-1,ly); g.lineTo(x-6,ly-1+lg*(i-1)); g.moveTo(x+1,ly); g.lineTo(x+6,ly-1-lg*(i-1)); }
+      g.stroke(); cir(g,x,y,r*0.7,bc); px(g,x-2,y-1,1,1,'#c8324a'); px(g,x+1,y-1,1,1,'#c8324a'); break; }
+  }
+};}
+function newGrub(g,x,y){
+  const s=1.5, wob=Math.sin(now/150+x*0.7), by=y+wob*0.6, c=C.grub;
+  cir(g,x,by,8*s,c);
+  g.globalAlpha=.45; cir(g,x-2*s,by-2.5*s,4.2*s,C.bone); g.globalAlpha=1;
+  g.globalAlpha=.35; cir(g,x,by+3*s,6*s,'#000'); g.globalAlpha=1;
+  g.globalAlpha=.25; px(g,(x-7*s)|0,(by-1*s)|0,(14*s)|0,1,'#000'); px(g,(x-6*s)|0,(by+2.5*s)|0,(12*s)|0,1,'#000'); g.globalAlpha=1;
+  const lstep=Math.sin(now/90+x)*s;
+  px(g,(x-5*s)|0,(by+6*s)|0,2,Math.max(1,(2*s+lstep)|0),'#00000055'); px(g,(x+3*s)|0,(by+6*s)|0,2,Math.max(1,(2*s-lstep)|0),'#00000055');
+  px(g,(x-6*s)|0,(y-8*s+wob)|0,1,3*s,c); px(g,(x+5*s)|0,(y-8*s-wob)|0,1,3*s,c);
+  px(g,(x-4*s)|0,(by-2*s)|0,2,2,'#180608'); px(g,(x+2*s)|0,(by-2*s)|0,2,2,'#180608');
+  px(g,(x-1*s)|0,(by+1*s)|0,Math.max(1,(2*s)|0),1,'#180608');
+}
+
+const ENEMIES=[
+  {name:'Fly',      desc:'Beelzebub’s swarm',   old:oldCircle('#3a4a1a',7), neu:newMob('fly')},
+  {name:'Pup',      desc:'hellhound whelp',           old:oldCircle('#2a2a3a',7), neu:newMob('pup')},
+  {name:'Ghoul',    desc:'shambling undead',          old:oldCircle('#6a5a4a',7), neu:newMob('ghoul')},
+  {name:'Debris',   desc:'flung rubble',              old:oldCircle('#5e3f52',8), neu:newMob('debris')},
+  {name:'Monolith', desc:'carved standing stone',     old:oldMonolith,            neu:newMob('monolith')},
+  {name:'Preta',    desc:'hungry ghost',              old:oldCircle('#8a8a6a',7), neu:newMob('preta')},
+  {name:'Spider',   desc:'friendly familiar',         old:oldCircle('#c8324a',7), neu:newMob('spider')},
+  {name:'Grub',     desc:'the green blob, reworked',  old:oldGrub,                neu:newGrub},
+];
+
+const CW=44, CH=44, CX=22, CY=25;
+const cells=[];
+const grid=document.getElementById('grid');
+for(const e of ENEMIES){
+  const card=document.createElement('div'); card.className='card';
+  card.innerHTML=`<h2>${e.name}</h2><p class="desc">${e.desc}</p>`;
+  const pair=document.createElement('div'); pair.className='pair';
+  for(const side of ['before','after']){
+    const cell=document.createElement('div'); cell.className='cell '+side;
+    const cv=document.createElement('canvas'); cv.width=CW; cv.height=CH;
+    const tag=document.createElement('span'); tag.className='tag';
+    tag.textContent = side==='before' ? 'Before' : 'After';
+    cell.appendChild(cv);
+    if(side==='before') cell.appendChild(tag); else cell.insertBefore(tag,cv), cell.appendChild(tag);
+    // keep tag under canvas for both
+    cell.innerHTML=''; cell.appendChild(cv); cell.appendChild(tag);
+    pair.appendChild(cell);
+    cells.push({g:cv.getContext('2d'), draw: side==='before'?e.old:e.neu, cy: e.name==='Grub'?23:CY});
+  }
+  card.appendChild(pair); grid.appendChild(card);
+}
+
+function frame(t){
+  now=t;
+  for(const c of cells){
+    c.g.clearRect(0,0,CW,CH);
+    c.g.imageSmoothingEnabled=false;
+    c.g.globalAlpha=1;
+    c.draw(c.g, CX, c.cy);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>

@@ -204,3 +204,67 @@ A separate, throwaway build for checking the whole roster fast (the shipping fil
 - **R** restart.
 
 Use it to eyeball every boss and phase; ship `hell-farmers.html`.
+
+---
+
+# Atmosphere & feel pass (update 2026-07-16)
+
+A follow-up polish pass on the *whole game's* presentation — all of it purely
+visual, no gameplay or balance touched, and no new art (procedural canvas only).
+
+- **Boss-entrance nameplate.** Walking into a boss gate now *announces* it: the
+  boss's name slams across the arena in ember, holds a beat, and fades — with a
+  "BOSS GATE N/20" kicker and an underline. It used to only appear as small HUD
+  text. A free moment of theatre on every one of the 21 gates.
+- **Filmic vignette.** The screen edges now fall gently into shadow, pulling the
+  eye to the action — subtle in the halls, a shade heavier in a boss arena. It
+  steps aside automatically in the arenas that already run their own darkness
+  (e.g. the pitch-black rooms), so nothing double-darkens.
+- **Ambient embers.** A few soft motes now drift up through every combat room, so
+  even a cleared arena still looks like it's smouldering. They yield to the
+  sandstorm/dark rooms so they never add clutter.
+- **Low-health danger throb.** As your hearts run low the screen edges pulse
+  blood-red, beating faster the closer you are to death — a tension cue you
+  *feel* a beat before you read the health bar. Pure feedback: it changes nothing
+  about the fight itself.
+
+All verified in-engine (Puppeteer), zero JavaScript errors. The dev test build
+was regenerated from this same updated file, so it carries the new feel too.
+
+## Combat-feel pass (update 2026-07-16, cont.)
+
+More feel, same rules — visual only, no balance, no new art:
+
+- **Boss phase-transition punch.** A boss changing form used to happen in silence —
+  the sprite just swapped. Now it *lands*: a white screen-pop, a camera kick, twin
+  shockwave rings burst off the boss, and the new phase's name ("· NEW PHASE ·
+  UNCHAINED") is announced across the arena. Every form-change on every boss now
+  reads as an event. (Fires only on real transitions, never on the initial spawn.)
+- **Boss health-bar chip damage.** A pale "ghost" now lags a beat behind the boss
+  health bar and then drains down to the real value, so a big hit reads as a
+  satisfying *chunk* taken instead of the bar simply being shorter the next frame.
+- **Dash dust-kick.** The dash already left an afterimage trail; it now also kicks a
+  small puff of ground dust off the launch, so the burst of speed has weight under it.
+
+Again: verified in-engine, zero errors, and the dev test build was regenerated to match.
+
+## Hall-enemy shapes pass (update 2026-07-16, cont.)
+
+Closing out the last of the brief's "circles." The Hall mobs — the small enemies
+that fill the 100 rooms between bosses — were still drawing as plain filled
+circles (and one plain box). Every one is now a proper little pixel creature, in
+the same hand-drawn style as the boss sprites and combat critters:
+
+- **Fly** — a segmented body with fast-buzzing translucent wings and a red eye.
+- **Pup** (hellhound whelp) — a four-legged hound with an ember eye, ear and tail,
+  legs on a run cycle.
+- **Ghoul** — a hunched, bowed-head undead with long dangling arms.
+- **Debris** — an angular rubble chunk instead of a brown disc.
+- **Monolith** — a carved standing stone with a slowly-pulsing rune (was a flat box).
+- **Preta** (hungry ghost) — a distended starving belly, shrunken head, thin arms.
+- **Spider** (friendly familiar) — a real little spider with animated legs.
+- **Grub** (elite/normal) — kept its shape but gained segment bands, a mandible
+  mouth and stubby crawling legs, so it reads as a grub instead of a green ball.
+
+Hitboxes are untouched — this is purely how they're drawn. Verified in-engine with
+a full spawn lineup, zero errors; dev test build regenerated to match.
