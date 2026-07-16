@@ -1572,8 +1572,57 @@ const Music=(()=>{
     if(!timer) timer=setInterval(()=>{ try{ if(!useFiles) schedule(); }catch(e){ song=null; } },25);
   }
 
+  /* ================= SOUND EFFECTS =================
+     Synthesised live through the SAME graph as the music, so the mute (M) and
+     volume (-/=) controls already cover them. No sample files — nothing to load,
+     nothing to 404, all original procedural audio. */
+  let lastFire=0, lastHit=0;
+  function sfx(name){
+    if(!ctxA || !on || ctxA.state!=='running') return;
+    const t=ctxA.currentTime;
+    switch(name){
+      case 'fire':                                  // fired a LOT — short, quiet, throttled
+        if(t-lastFire<0.04) return; lastFire=t;
+        voice('square', 620, t, .05, .06, +8);
+        voice('square', 470, t+.012, .05, .05); break;
+      case 'hit':                                   // a shot connects — throttled so mass hits don't stack
+        if(t-lastHit<0.03) return; lastHit=t;
+        noise(t,.03,.05,3200); break;
+      case 'enemyDie':
+        noise(t,.14,.14,900);
+        voice('sawtooth',180,t,.14,.10);
+        voice('sawtooth',90,t+.02,.16,.10); break;
+      case 'hurt':                                  // the player takes a hit
+        voice('sawtooth',150,t,.20,.22);
+        voice('square',96,t,.22,.14);
+        noise(t,.10,.10,500); break;
+      case 'dash':
+        noise(t,.20,.10,700);
+        voice('triangle',300,t,.14,.05,+20); break;
+      case 'pickup':
+        voice('triangle',880,t,.09,.12);
+        voice('triangle',1320,t+.06,.10,.10); break;
+      case 'bossIntro':
+        voice('sawtooth',98,t,.55,.20);
+        voice('sawtooth',147,t,.55,.12);
+        voice('square',49,t,.6,.12); break;
+      case 'phase':                                 // form-change riser stinger
+        for(let i=0;i<4;i++) voice('square',280+i*130,t+i*.05,.14,.10,+6);
+        noise(t+.18,.14,.10,1500); break;
+      case 'bossDie':
+        kick(t,.9); noise(t,.4,.22,320); voice('sawtooth',70,t,.55,.22);
+        for(let i=0;i<3;i++) voice('square',330-i*70,t+.1+i*.09,.2,.12); break;
+      case 'victory':
+        [523,659,784,1046].forEach((f,i)=>{ voice('triangle',f,t+i*.11,.5,.14); voice('square',f/2,t+i*.11,.4,.06); });
+        break;
+      case 'gameover':
+        [330,247,196,147].forEach((f,i)=>{ voice('sawtooth',f,t+i*.20,.5,.14); });
+        break;
+    }
+  }
+
   return {
-    unlock, setContext, next,
+    unlock, setContext, next, sfx,
     toggle(){ on=!on; if(master) master.gain.value=on?vol:0;
       if(useFiles){ [audioA,audioB].forEach(a=>{ if(a) a.volume=on?vol:0; }); }
       return on; },
@@ -3045,6 +3094,7 @@ function enterBoss(){
   setTimeout(saveRun,0);                        // checkpoint: the boss gate
   say(`BOSS GATE ${seg}/20 — ${D.name}`);
   bossIntro=2400;                               // the name SLAMS in, holds, then fades
+  Music.sfx('bossIntro');
 }
 
 function nextRoom(){
@@ -3079,7 +3129,7 @@ function nextRoom(){
       }
 
       RUN.running=false;
-      mode=S.WIN; menuSel=0; clearSave();
+      mode=S.WIN; menuSel=0; clearSave(); Music.sfx('victory');
       META.wins++;
       if(modeIs('GAUNTLET')) META.gauntletsWon++;
       META.best=META.best||{};
@@ -3238,7 +3288,7 @@ function damage(n,src){
      Armor now has something to subtract from — it was mathematically inert
      while every hit dealt exactly 1 and the floor was also 1. */
   const dmg=Math.max(1, n - Math.floor(stats.armor/3));
-  P.hp-=dmg; P.iframe=900; shake=240;
+  P.hp-=dmg; P.iframe=900; shake=240; Music.sfx('hurt');
   RUN.hits+=dmg;
   /* Taking a hit is the single most important thing that can happen to you.
      It should stop the world for a moment. */
@@ -3275,7 +3325,7 @@ function damage(n,src){
     }
 
     /* THE RUN IS OVER. In the Gauntlet, so is everything else. */
-    P.hp=0; mode=S.DEAD; menuSel=0; clearSave();
+    P.hp=0; mode=S.DEAD; menuSel=0; clearSave(); Music.sfx('gameover');
     RUN.running=false;
     META.deaths++;
     if(seg>META.deepest) META.deepest=seg;
@@ -3469,6 +3519,7 @@ function hurtEnemy(e,shot,dmg){
      has something to shred. */
   if(e.armor>0 && !(shot&&shot.shred)) d=Math.max(.4, d-e.armor);
   e.hp-=d; e.hit=110; e.noHit=0;
+  Music.sfx('hit');                                    // the "shot connects" tick (throttled in the synth)
 
   /* THE WEIGHT.
      Not every pellet — a freeze on every tear at 5 shots/second would feel like
@@ -3607,7 +3658,7 @@ function tryDash(){
   P.iframe=Math.max(P.iframe,DASH_IFRAME);
   P.dashN--;
   P.dashQ.push(dashRecharge());          // charges refill INDEPENDENTLY
-  shake=Math.max(shake,60);
+  shake=Math.max(shake,60); Music.sfx('dash');
   for(let i=0;i<7;i++) burst(P.x-P.dashVX*0.02, P.y-4, 1, '#6a5a48');   // ground dust kicked off the launch
 }
 
@@ -3741,7 +3792,7 @@ function tickPlayer(dt, ms){
     else if(mode===S.HALL && cond.id==='SILENCE'){   // SILENCE: the gun is dead
       P.cool=400; if(msgT<400) say('SILENCE — DASH THROUGH THEM');
     }
-    else { P.cool=fireCool(); fire(); flash=140; }        // muzzle flash (SHADOW SWAP)
+    else { P.cool=fireCool(); fire(); flash=140; Music.sfx('fire'); }   // muzzle flash (SHADOW SWAP)
   }
 
   /* SILENCE turns the dash into the weapon. Dash THROUGH an enemy to kill it. */
@@ -3955,7 +4006,7 @@ function tickBoss(dt, ms){
         /* PHASE-TRANSITION PUNCH — the form-change used to happen silently; the
            sprite just swapped. Now it lands: a white pop, a kick, a shockwave off
            the boss, and the new phase's name announced across the arena. */
-        phaseAnn=1400; phaseAnnName=ph.name;
+        phaseAnn=1400; phaseAnnName=ph.name; Music.sfx('phase');
         fxFlash=Math.max(fxFlash,190);
         shake=Math.max(shake,150);
         ring(boss.x,boss.y,64,C.sulfur,440,3);
@@ -3980,7 +4031,7 @@ function tickBoss(dt, ms){
       const bx=boss.x, by=boss.y, bcol=boss.col, bw=Math.max(boss.w,boss.h);
       stopHit(240);                            // a full held beat
       slowTime(1500, 0.22);                    // then everything crawls
-      shake=440;
+      shake=440; Music.sfx('bossDie');
       ring(bx,by, bw*1.2, C.bone,  520, 4);
       ring(bx,by, bw*2.2, bcol,    760, 3);
       ring(bx,by, bw*3.6, C.gold,  980, 2);
@@ -4213,9 +4264,9 @@ function tickDrops(dt, ms){
       const a=ang(d,P); d.x+=Math.cos(a)*pull*dt; d.y+=Math.sin(a)*pull*dt;
     }
     if(dst(d,P)<14){
-      if(d.kind==='heart'){ d.dead=1; P.hp=Math.min(stats.maxHp,P.hp+1); }
+      if(d.kind==='heart'){ d.dead=1; P.hp=Math.min(stats.maxHp,P.hp+1); Music.sfx('pickup'); }
       if(d.kind==='shard'){
-        d.dead=1; shards+=Math.round(20*(1+stats.shardGain));
+        d.dead=1; shards+=Math.round(20*(1+stats.shardGain)); Music.sfx('pickup');
         /* THE GREED TRAP is a HALL-room mechanic: grab the loose shards and the
            doors seal until you clear the ambush. It must NOT fire in a boss room.
            A boss reward drops shards too, and the reopen logic only runs in
@@ -4445,6 +4496,7 @@ function gib(x,y,n,col,power=1){
 /* The punctuation on a death. */
 function deathFx(e, isLast){
   const col = e.col || C.blood;
+  Music.sfx('enemyDie');
   const big = e.elite ? 1.5 : 1;
 
   gib(e.x, e.y, e.elite?22:12, col, big);
@@ -6020,17 +6072,36 @@ function foeBody(type,x,y,s,c,tell){
   }
   if(type==='imp'){
     const wing=Math.sin(now/70+x)*3*s;                            // flapping
-    g.globalAlpha=.85;
-    px((x-9*s)|0,(y-3*s-wing)|0,4*s,6*s,'#4a1420'); px((x+5*s)|0,(y-3*s+wing)|0,4*s,6*s,'#4a1420'); // wings
+    /* bat wings — angled membrane, not flat rectangles */
+    g.globalAlpha=.9;
+    px((x-11*s)|0,(y-5*s-wing)|0,6*s,3*s,'#4a1420'); px((x-11*s)|0,(y-2*s-wing)|0,4*s,4*s,'#3a1018');
+    px((x+5*s)|0,(y-5*s+wing)|0,6*s,3*s,'#4a1420');  px((x+7*s)|0,(y-2*s+wing)|0,4*s,4*s,'#3a1018');
     g.globalAlpha=1;
-    px((x-6*s)|0,(y-6*s+wob)|0,12*s,12*s,c);                      // body
-    px((x-6*s)|0,(y-6*s+wob)|0,12*s,3*s,C.bone);                  // lit brow
-    px((x-8*s)|0,(y-10*s+wob)|0,3*s,4*s,C.bone); px((x+5*s)|0,(y-10*s+wob)|0,3*s,4*s,C.bone); // horns
-    px((x-4*s)|0,(y-2*s+wob)|0,3*s,3*s,C.sulfur); px((x+1*s)|0,(y-2*s+wob)|0,3*s,3*s,C.sulfur); // eyes
-    px((x-4*s)|0,(y+5*s)|0,3*s,3*s+step*s,'#2a0c12'); px((x+1*s)|0,(y+5*s)|0,3*s,3*s-step*s,'#2a0c12'); // legs
+    cir(x,(y+1*s+wob)|0, 6*s, c);                                 // rounded torso
+    cir(x,(y-4*s+wob)|0, 4*s, c);                                 // head
+    g.globalAlpha=.35; cir((x-1.5*s)|0,(y-0.5*s+wob)|0,3*s,C.bone); g.globalAlpha=1; // belly sheen
+    px((x-5*s)|0,(y-9*s+wob)|0,2*s,4*s,C.bone); px((x+3*s)|0,(y-9*s+wob)|0,2*s,4*s,C.bone); // horns
+    px((x-3*s)|0,(y-5*s+wob)|0,2*s,2*s,C.sulfur); px((x+1*s)|0,(y-5*s+wob)|0,2*s,2*s,C.sulfur); // glowing eyes
+    px((x-2*s)|0,(y-2*s+wob)|0,4*s,1,'#2a0c12');                  // snarl
+    px((x+5*s)|0,(y+4*s)|0,3*s,1,'#4a1420'); px((x+7*s)|0,(y+2*s)|0,1,3*s,'#4a1420'); // barbed tail
+    px((x-3*s)|0,(y+6*s)|0,2*s,Math.max(1,((3+step)*s)|0),'#2a0c12'); px((x+1*s)|0,(y+6*s)|0,2*s,Math.max(1,((3-step)*s)|0),'#2a0c12'); // legs
     return;
   }
-  /* brute / dasher — a crouched hound */
+  if(type==='husk'){
+    /* a gaunt, hollowed-out husk — tall and thin, hunched, arms hanging. It had
+       no shape of its own before (it borrowed the hound below). */
+    const sway=Math.sin(now/220+x)*1.5*s;
+    px((x-4*s)|0,(y-8*s+wob*0.5)|0,8*s,15*s,c);                   // tall gaunt torso
+    px((x-1*s)|0,(y-5*s+wob*0.5)|0,2*s,8*s,'#3a2a5a');            // cracked chest seam
+    px((x-3*s)|0,(y-12*s+wob*0.5)|0,6*s,5*s,c);                   // bowed head
+    px((x-4*s)|0,(y-8*s+wob*0.5)|0,8*s,2,C.bone);                 // lit shoulder edge
+    px((x-2*s)|0,(y-10*s+wob*0.5)|0,2*s,2*s,tell?C.sulfur:'#d8b8ff'); // hollow glowing eyes
+    px((x+1*s)|0,(y-10*s+wob*0.5)|0,2*s,2*s,tell?C.sulfur:'#d8b8ff');
+    px((x-6*s+sway)|0,(y-6*s)|0,2*s,11*s,c); px((x+4*s-sway)|0,(y-6*s)|0,2*s,11*s,c); // long dangling arms
+    px((x-3*s)|0,(y+7*s)|0,2*s,4*s,'#2a1e42'); px((x+1*s)|0,(y+7*s)|0,2*s,4*s,'#2a1e42'); // legs
+    return;
+  }
+  /* fallback — a crouched hound (current foes are grub/imp/husk; kept for safety) */
   px((x-8*s)|0,(y-7*s+wob*0.5)|0,16*s,14*s,c);                    // body
   px((x-8*s)|0,(y-7*s+wob*0.5)|0,16*s,3*s,tell?C.bone:'#00000030');// spine ridge / tell blanch
   px((x-9*s)|0,(y-9*s)|0,4*s,4*s,c); px((x+5*s)|0,(y-9*s)|0,4*s,4*s,c);   // ears

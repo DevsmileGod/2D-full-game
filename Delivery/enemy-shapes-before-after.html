@@ -137,6 +137,47 @@ function newGrub(g,x,y){
   px(g,(x-1*s)|0,(by+1*s)|0,Math.max(1,(2*s)|0),1,'#180608');
 }
 
+/* imp + husk foes (s=1.5), old vs new */
+function oldImp(g,x,y){
+  const s=1.5, wob=Math.sin(now/150+x*0.7), step=Math.sin(now/90+x), wing=Math.sin(now/70+x)*3*s;
+  g.globalAlpha=.85;
+  px(g,(x-9*s)|0,(y-3*s-wing)|0,4*s,6*s,'#4a1420'); px(g,(x+5*s)|0,(y-3*s+wing)|0,4*s,6*s,'#4a1420');
+  g.globalAlpha=1;
+  px(g,(x-6*s)|0,(y-6*s+wob)|0,12*s,12*s,'#c8324a'); px(g,(x-6*s)|0,(y-6*s+wob)|0,12*s,3*s,'#e8dcc8');
+  px(g,(x-8*s)|0,(y-10*s+wob)|0,3*s,4*s,'#e8dcc8'); px(g,(x+5*s)|0,(y-10*s+wob)|0,3*s,4*s,'#e8dcc8');
+  px(g,(x-4*s)|0,(y-2*s+wob)|0,3*s,3*s,'#ffd24a'); px(g,(x+1*s)|0,(y-2*s+wob)|0,3*s,3*s,'#ffd24a');
+  px(g,(x-4*s)|0,(y+5*s)|0,3*s,Math.max(1,(3*s+step*s)|0),'#2a0c12'); px(g,(x+1*s)|0,(y+5*s)|0,3*s,Math.max(1,(3*s-step*s)|0),'#2a0c12');
+}
+function newImp(g,x,y){
+  const s=1.5, wob=Math.sin(now/150+x*0.7), step=Math.sin(now/90+x), wing=Math.sin(now/70+x)*3*s, c='#c8324a';
+  g.globalAlpha=.9;
+  px(g,(x-11*s)|0,(y-5*s-wing)|0,6*s,3*s,'#4a1420'); px(g,(x-11*s)|0,(y-2*s-wing)|0,4*s,4*s,'#3a1018');
+  px(g,(x+5*s)|0,(y-5*s+wing)|0,6*s,3*s,'#4a1420'); px(g,(x+7*s)|0,(y-2*s+wing)|0,4*s,4*s,'#3a1018');
+  g.globalAlpha=1;
+  cir(g,x,(y+1*s+wob)|0,6*s,c); cir(g,x,(y-4*s+wob)|0,4*s,c);
+  g.globalAlpha=.35; cir(g,(x-1.5*s)|0,(y-0.5*s+wob)|0,3*s,'#e8dcc8'); g.globalAlpha=1;
+  px(g,(x-5*s)|0,(y-9*s+wob)|0,2*s,4*s,'#e8dcc8'); px(g,(x+3*s)|0,(y-9*s+wob)|0,2*s,4*s,'#e8dcc8');
+  px(g,(x-3*s)|0,(y-5*s+wob)|0,2*s,2*s,'#ffd24a'); px(g,(x+1*s)|0,(y-5*s+wob)|0,2*s,2*s,'#ffd24a');
+  px(g,(x-2*s)|0,(y-2*s+wob)|0,4*s,1,'#2a0c12');
+  px(g,(x+5*s)|0,(y+4*s)|0,3*s,1,'#4a1420'); px(g,(x+7*s)|0,(y+2*s)|0,1,3*s,'#4a1420');
+  px(g,(x-3*s)|0,(y+6*s)|0,2*s,Math.max(1,((3+step)*s)|0),'#2a0c12'); px(g,(x+1*s)|0,(y+6*s)|0,2*s,Math.max(1,((3-step)*s)|0),'#2a0c12');
+}
+function oldHusk(g,x,y){
+  const s=1.5, wob=Math.sin(now/150+x*0.7), step=Math.sin(now/90+x), c='#8a6ad8';
+  px(g,(x-8*s)|0,(y-7*s+wob*0.5)|0,16*s,14*s,c); px(g,(x-8*s)|0,(y-7*s+wob*0.5)|0,16*s,3*s,'#00000030');
+  px(g,(x-9*s)|0,(y-9*s)|0,4*s,4*s,c); px(g,(x+5*s)|0,(y-9*s)|0,4*s,4*s,c);
+  px(g,(x-5*s)|0,(y-3*s+wob*0.5)|0,3*s,3*s,'#c8324a'); px(g,(x+2*s)|0,(y-3*s+wob*0.5)|0,3*s,3*s,'#c8324a');
+  px(g,(x-6*s)|0,(y+6*s)|0,4*s,Math.max(1,(3*s+step*1.5*s)|0),'#00000040'); px(g,(x+2*s)|0,(y+6*s)|0,4*s,Math.max(1,(3*s-step*1.5*s)|0),'#00000040');
+}
+function newHusk(g,x,y){
+  const s=1.5, wob=Math.sin(now/150+x*0.7), sway=Math.sin(now/220+x)*1.5*s, c='#8a6ad8';
+  px(g,(x-4*s)|0,(y-8*s+wob*0.5)|0,8*s,15*s,c); px(g,(x-1*s)|0,(y-5*s+wob*0.5)|0,2*s,8*s,'#3a2a5a');
+  px(g,(x-3*s)|0,(y-12*s+wob*0.5)|0,6*s,5*s,c); px(g,(x-4*s)|0,(y-8*s+wob*0.5)|0,8*s,2,'#e8dcc8');
+  px(g,(x-2*s)|0,(y-10*s+wob*0.5)|0,2*s,2*s,'#d8b8ff'); px(g,(x+1*s)|0,(y-10*s+wob*0.5)|0,2*s,2*s,'#d8b8ff');
+  px(g,(x-6*s+sway)|0,(y-6*s)|0,2*s,11*s,c); px(g,(x+4*s-sway)|0,(y-6*s)|0,2*s,11*s,c);
+  px(g,(x-3*s)|0,(y+7*s)|0,2*s,4*s,'#2a1e42'); px(g,(x+1*s)|0,(y+7*s)|0,2*s,4*s,'#2a1e42');
+}
+
 const ENEMIES=[
   {name:'Fly',      desc:'Beelzebub’s swarm',   old:oldCircle('#3a4a1a',7), neu:newMob('fly')},
   {name:'Pup',      desc:'hellhound whelp',           old:oldCircle('#2a2a3a',7), neu:newMob('pup')},
@@ -146,6 +187,8 @@ const ENEMIES=[
   {name:'Preta',    desc:'hungry ghost',              old:oldCircle('#8a8a6a',7), neu:newMob('preta')},
   {name:'Spider',   desc:'friendly familiar',         old:oldCircle('#c8324a',7), neu:newMob('spider')},
   {name:'Grub',     desc:'the green blob, reworked',  old:oldGrub,                neu:newGrub},
+  {name:'Imp',      desc:'winged tormentor',          old:oldImp,                 neu:newImp},
+  {name:'Husk',     desc:'hollowed-out shell',        old:oldHusk,                neu:newHusk},
 ];
 
 const CW=44, CH=44, CX=22, CY=25;
@@ -165,7 +208,7 @@ for(const e of ENEMIES){
     // keep tag under canvas for both
     cell.innerHTML=''; cell.appendChild(cv); cell.appendChild(tag);
     pair.appendChild(cell);
-    cells.push({g:cv.getContext('2d'), draw: side==='before'?e.old:e.neu, cy: e.name==='Grub'?23:CY});
+    cells.push({g:cv.getContext('2d'), draw: side==='before'?e.old:e.neu, cy: (e.name==='Grub'||e.name==='Imp'||e.name==='Husk')?23:CY});
   }
   card.appendChild(pair); grid.appendChild(card);
 }

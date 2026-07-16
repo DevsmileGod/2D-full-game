@@ -265,6 +265,29 @@ the same hand-drawn style as the boss sprites and combat critters:
 - **Spider** (friendly familiar) — a real little spider with animated legs.
 - **Grub** (elite/normal) — kept its shape but gained segment bands, a mandible
   mouth and stubby crawling legs, so it reads as a grub instead of a green ball.
+- **Imp** — was a red box with a white band; now a rounded winged demon with bat
+  wings, curved horns, glowing eyes, a barbed tail and little running legs.
+- **Husk** — had no shape of its own (it borrowed a generic hound body); now a
+  tall, gaunt, hollow-eyed humanoid husk with a cracked chest and dangling arms.
 
+That's **every** Hall enemy — all 7 mob types and all 3 foe types (grub/imp/husk).
 Hitboxes are untouched — this is purely how they're drawn. Verified in-engine with
-a full spawn lineup, zero errors; dev test build regenerated to match.
+a full spawn lineup, zero errors; dev test build regenerated to match. See the
+`enemy-shapes-before-after.html` sheet for a live before/after of all of them.
+
+## Sound-effects pass (update 2026-07-16)
+
+The game had a full generative background-music score but **no sound effects at
+all** — nothing played on any gameplay event. Added a complete SFX layer:
+
+- **Events covered:** weapon fire, shot connects, enemy death, boss death, boss
+  entrance, boss phase-change, player hurt, dash, pickup (heart/shard), **victory**
+  and **game-over** stings.
+- **How it's built:** every effect is **synthesised live** through the *same*
+  WebAudio engine that already makes the music — so there are **no sample files**
+  (nothing to load, nothing to 404), it's **all original procedural audio** (no AI,
+  no samples), and the existing **M (mute)** and **-/= (volume)** controls already
+  cover it. Rapid sounds (fire, hit) are throttled so they never turn into noise.
+- **No gameplay/balance change** — audio only.
+
+Verified in-engine: every effect fires on the right event with zero errors.
